@@ -133,7 +133,7 @@ def main(argv):
 
         # When new log record found, handle first previously stored log record
         if re.match(log_record_start, line):
-            handle_log_record(line)
+            handle_log_record()
             # Clear log_record after handling
             log_record = ''
 
@@ -149,7 +149,7 @@ def main(argv):
 
     # Handle final log_record
     if len(log_record) > 0:
-        handle_log_record(log_record)
+        handle_log_record()
 
     # Print sorted by count summary
     if summary:
@@ -157,7 +157,7 @@ def main(argv):
         for log, count in sorted_items.items():
             print ('{:8} {}'.format(count, log))
 
-def handle_log_record(line):
+def handle_log_record():
     global summarized
     global summary
     global log_record
