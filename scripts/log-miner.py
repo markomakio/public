@@ -59,7 +59,7 @@ def main(argv):
                         '--date',
                         metavar='\'YYYY-mm-dd HH:MM:SS\'',
                         type=str,
-                        help='Parse Apache httpd log format')
+                        help='Start search from given timestamp that can be partial')
     parser.add_argument('-c',
                         '--column',
                         metavar='number',
@@ -123,7 +123,7 @@ def main(argv):
                 log_date = split_line[0] + split_line[1]
                 # Strip all non-numeric from timestamp
                 log_date = re.sub('\D', '', log_date)
-                # Given timestamp can be partitial as comparing as strings
+                # Given timestamp can be partial as comparing as strings
                 if log_date > search_date:
                     found_date = True
                 else:
