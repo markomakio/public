@@ -23,7 +23,6 @@ summarized={}
 summary=False
 log_record=''
 regex_search = '(WARN|ERROR|FATAL|NullPointerException)'
-neg_regex_search = '' 
 column = 2
 summary_extra_lines = re.compile(r'(Message Details: |Caused by: |^[a-zA-Z0-9\/_\$\.])')
 
@@ -33,6 +32,7 @@ def main(argv):
     global log_record
     global regex_search 
     global neg_regex_search 
+    global mask_regex_search 
     global column 
     found_date = False
     search_date = None
@@ -50,21 +50,21 @@ def main(argv):
     parser.add_argument('-s',
                         '--summary',
                         action='store_true',
-                        help='Print unique log rows as counted summary')
+                        help='Print unique log rows as counted summary.')
     parser.add_argument('-l',
                         '--since_last_run',
                         action='store_true',
-                        help='Read only new lines written to the log after previous run')
+                        help='Read only new lines written to the log after previous run.')
     parser.add_argument('-d',
                         '--date',
                         metavar='\'YYYY-mm-dd HH:MM:SS\'',
                         type=str,
-                        help='Start search from given timestamp that can be partial')
+                        help='Start search from given timestamp that can be partial.')
     parser.add_argument('-c',
                         '--column',
                         metavar='number',
                         type=int,
-                        help='Start summary output from this column number')
+                        help='Start summary output from this column number.')
     parser.add_argument('-r',
                         '--regex',
                         metavar='\'regex_pattern\'',
@@ -75,6 +75,11 @@ def main(argv):
                         metavar='\'neg_regex_pattern\'',
                         type=str,
                         help='Negative RegEx search pattern. By default no value.')
+    parser.add_argument('-m',
+                        '--mask',
+                        metavar='\'mask_regex_pattern\'',
+                        type=str,
+                        help='Mask log content with RegEx to hide values or for better summary. By default no value.')
     
     # Execute parse_args() method
     args = parser.parse_args()
@@ -83,6 +88,7 @@ def main(argv):
     log_file = args.LogFile
     summary = args.summary
     neg_regex_search = args.negregex
+    mask_regex_search = args.mask
     since_last_run = args.since_last_run
     if args.date is not None:
         search_date = re.sub('\D', '', args.date)
@@ -124,7 +130,7 @@ def main(argv):
                 # Strip all non-numeric from timestamp
                 log_date = re.sub('\D', '', log_date)
                 # Given timestamp can be partial as comparing as strings
-                if log_date > search_date:
+                if log_date >= search_date:
                     found_date = True
                 else:
                     continue
@@ -172,6 +178,9 @@ def handle_log_record():
             search_match = True
     elif re.search(regex_search, log_record):
         search_match = True
+
+    if mask_regex_search is not None:
+        log_record = re.sub(mask_regex_search, '!MASKED!', log_record)
 
     if search_match == True and summary == False:
         print (log_record)
