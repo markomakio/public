@@ -18,11 +18,11 @@ Example log records:
 
 ### Use case 1: Get summary of log content
 
-Get summary of log content using default search pattern '(WARN|ERROR|FATAL|NullPointerException)'.
+Get summary of log content using default search pattern: `'(WARN|ERROR|FATAL|NullPointerException)'`
 
     ./log-miner.py -s logfile.log
 
-### Use case 2: Get full log records based on RedEx search
+### Use case 2: Get full log records based on RegEx search
 
 Get all full log records based on given RegEx pattern.
 
@@ -44,17 +44,17 @@ Get only new logs written after previous run. Ignored if the log file (file inod
 
 Use mask to hide values or to get better summary. For example IP:Port:
 
-    ./log-miner.py -s -m '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{2,5}'
+    ./log-miner.py -s -m '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:[0-9]{2,5}' logfile.log
 
 ### Use case 6: Exclude logs
 
 Leave out uninteresting logs.
 
-    ./log-miner.py -r Exception -n 'This is not interesting'
+    ./log-miner.py -r Exception -n 'This is not interesting' logfile.log
 
 ### Use case 7: Combine options
 
 Combine different options.
 
-    ./log-miner.py -r Exception -n 'Not this Exception' --since_last_run -m 'mask this string'
+    ./log-miner.py -r Exception -n 'Not this Exception' --since_last_run -m 'mask this string' logfile.log
 
