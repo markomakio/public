@@ -20,7 +20,7 @@ Example log records:
 
 Get summary of log content using default search pattern: `'(WARN|ERROR|FATAL|NullPointerException)'`
 Summary output is similar to running command: `grep something | sort | uniq -c | sort -n`
-However sort command can use massive amount of inodes and eventually fail due to run out inodes on /tmp. Running log-miner.py does not consume inodes.
+However sort command can use massive amount of temporary files and eventually fail due to run out inodes on /tmp. Running log-miner.py does not consume inodes.
 
     ./log-miner.py -s logfile.log
 
