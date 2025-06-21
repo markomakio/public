@@ -9,6 +9,7 @@
   ansible.builtin.command: /usr/bin/authselect current
   register: authselect_current
   when: authselect_check is success
+  changed_when: false
   tags:
     - authselect
  

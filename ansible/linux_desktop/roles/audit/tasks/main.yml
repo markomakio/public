@@ -43,6 +43,7 @@
   ansible.builtin.command: /bin/grep "audit=1" /etc/default/grub
   register: grep_audit
   failed_when: grep_audit.rc > 1
+  changed_when: false
   tags:
     - audit
 
@@ -56,6 +57,7 @@
   ansible.builtin.command: /bin/grep "audit_backlog_limit=8192" /etc/default/grub
   register: grep_audit2
   failed_when: grep_audit2.rc > 1
+  changed_when: false
   tags:
     - audit
 
