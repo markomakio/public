@@ -1,0 +1,14 @@
+- name: Copy sshd configs
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0600
+  loop:
+    - { src: 'sshd_config.j2', dest: '/etc/ssh/sshd_config' }
+    - { src: '50-redhat.conf.j2', dest: '/etc/ssh/sshd_config.d/50-redhat.conf' }
+  notify: Restart sshd
+  tags:
+    - sshd
+

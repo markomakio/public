@@ -1,0 +1,28 @@
+- name: Remove rpms
+  ansible.builtin.dnf:
+    name:
+      - cups
+    state: absent
+  tags:
+    - rpms
+
+- name: Install rpms
+  ansible.builtin.dnf:
+    name:
+      - aide
+      - ansible-collection-community-general
+      - bash-completion
+      - bat
+      - firewalld
+      - glibc-langpack-en
+      - nc
+      - openscap-scanner
+      - scap-security-guide
+      - sysstat
+      - unzip
+      - logwatch
+      - vim
+    state: present
+  tags:
+    - rpms
+    

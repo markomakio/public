@@ -1,0 +1,23 @@
+- name: Copy bash_logging.conf
+  ansible.builtin.copy:
+    src: bash_logging.conf
+    dest: /etc/rsyslog.d/bash_logging.conf
+    owner: root
+    group: root
+    mode: 0640
+  notify: Restart rsyslog
+  tags:
+    - bash
+    - bash_system
+    - rsyslog
+
+- name: Ensure rsyslog Default File Permissions Configured
+  ansible.builtin.replace:
+    path: /etc/rsyslog.conf
+    regexp: 'FileCreateMode="0644"'
+    replace: 'FileCreateMode="0640"'
+    mode: 0640
+  notify: Restart rsyslog
+  tags:
+    - rsyslog
+

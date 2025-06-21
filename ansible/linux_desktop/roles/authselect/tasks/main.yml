@@ -1,0 +1,30 @@
+- name: Check integrity of authselect current profile
+  ansible.builtin.command: /usr/bin/authselect check
+  register: authselect_check
+  changed_when: false
+  tags:
+    - authselect
+ 
+- name: Get authselect current features
+  ansible.builtin.command: /usr/bin/authselect current
+  register: authselect_current
+  when: authselect_check is success
+  tags:
+    - authselect
+ 
+- name: Ensure "without-nullok" feature is enabled
+  ansible.builtin.command: /usr/bin/authselect enable-feature without-nullok
+  register: authselect_enable
+  when:
+    - authselect_check is success
+    - authselect_current.stdout is not search("without-nullok")
+  tags:
+    - authselect
+ 
+- name: Ensure authselect changes are applied
+  ansible.builtin.command: /usr/bin/authselect apply-changes -b
+  when:
+    - authselect_enable is not skipped
+    - authselect_enable is success
+  tags:
+    - authselect

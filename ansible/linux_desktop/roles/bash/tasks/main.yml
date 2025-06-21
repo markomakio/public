@@ -1,0 +1,40 @@
+#- name: Get the username of the user running this Ansible playbook
+#  become: false
+#  ansible.builtin.command: /usr/bin/whoami
+#  register: user_running_playbook
+#  tags:
+#    - bash_user
+#    - bash
+
+- name: Create ~/.bashrc.d directory
+  become: false
+  ansible.builtin.file:
+    path: '/home/{{ user_running_playbook.stdout }}/.bashrc.d'
+    state: directory
+  tags:
+    - bash_user
+    - bash
+
+- name: Copy bashrc files to ~/.bashrc.d directory
+  become: false
+  ansible.builtin.copy:
+    src: '{{ item }}'
+    dest: '/home/{{ user_running_playbook.stdout }}/.bashrc.d'
+  loop:
+    - bash_history.bashrc
+    - bash_prompt.bashrc
+  tags:
+    - bash_user
+    - bash
+
+- name: Copy bash_logging.sh
+  ansible.builtin.copy:
+    src: bash_logging.sh
+    dest: /etc/profile.d/bash_logging.sh
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - bash_system
+    - bash
+

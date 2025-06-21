@@ -1,0 +1,51 @@
+#- name: Copy /etc/aide.conf
+#  ansible.builtin.copy:
+#    src: aide.conf
+#    dest: /etc/aide.conf
+#    owner: root
+#    group: root
+#    mode: 0600
+#  tags:
+#    - aide
+
+- name: Check if aide database exist
+  ansible.builtin.stat:
+    path: /var/lib/aide/aide.db.gz
+  register: aide_db
+  tags:
+    - aide
+
+- name: Aide init
+  ansible.builtin.command: /usr/sbin/aide --init
+  register: aide_init
+  when: not aide_db.stat.exists
+  tags:
+    - aide
+
+- name: Move aide database in place
+  ansible.builtin.command: /bin/mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+  when:
+    - not aide_db.stat.exists
+    - aide_init is success
+  tags:
+    - aide
+
+- name: Create /root/bin directory
+  ansible.builtin.file:
+    path: /root/bin
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+  tags:
+    - aide
+
+- name: Copy update-aide.sh
+  ansible.builtin.copy:
+    src: update-aide.sh
+    dest: /root/bin/update-aide.sh
+    owner: root
+    group: root
+    mode: 0500
+  tags:
+    - aide

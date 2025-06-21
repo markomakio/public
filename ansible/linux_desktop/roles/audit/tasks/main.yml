@@ -1,0 +1,67 @@
+- name: Copy auditd.conf
+  ansible.builtin.copy:
+    src: auditd.conf
+    dest: /etc/audit/auditd.conf
+    owner: root
+    group: root
+    mode: 0640
+  tags:
+    - audit
+
+- name: Copy audit rule templates
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/audit/rules.d/
+    remote_src: true
+    owner: root
+    group: root
+    mode: 0640
+  loop:
+    - /usr/share/audit/10-base-config.rules
+    - /usr/share/audit/30-pci-dss-v31.rules
+    - /usr/share/audit/43-module-load.rules
+  notify: Load audit rules
+  tags:
+    - audit
+
+- name: Copy audit rules
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /etc/audit/rules.d/
+    owner: root
+    group: root
+    mode: 0640
+  loop:
+    - 50-openscap-pci-dss.rules
+    - 31-privileged.rules
+    - 99-finalize.rules
+  notify: Load audit rules
+  tags:
+    - audit
+
+- name: Check if audit=1 is configured in grub
+  ansible.builtin.command: /bin/grep "audit=1" /etc/default/grub
+  register: grep_audit
+  failed_when: grep_audit.rc > 1
+  tags:
+    - audit
+
+- name: Enable audit=1 in grub
+  ansible.builtin.command: /sbin/grubby --update-kernel=ALL --args="audit=1"
+  when: grep_audit.rc == 1
+  tags:
+    - audit
+
+- name: Check if audit_backlog_limit is configured in grub
+  ansible.builtin.command: /bin/grep "audit_backlog_limit=8192" /etc/default/grub
+  register: grep_audit2
+  failed_when: grep_audit2.rc > 1
+  tags:
+    - audit
+
+- name: Enable audit_backlog_limit in grub
+  ansible.builtin.command: /sbin/grubby --update-kernel=ALL --args="audit_backlog_limit=8192"
+  when: grep_audit2.rc == 1
+  tags:
+    - audit
+

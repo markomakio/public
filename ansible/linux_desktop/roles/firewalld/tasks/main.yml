@@ -1,0 +1,15 @@
+- name: Deploy firewalld templates
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0640
+  loop:
+    - { src: 'firewalld.conf.j2', dest: '/etc/firewalld/firewalld.conf' }
+    - { src: 'public.xml.j2', dest: '/etc/firewalld/zones/public.xml' }
+    - { src: 'drop.xml.j2', dest: '/etc/firewalld/zones/drop.xml' }
+  notify: Restart firewalld
+  tags:
+    - firewalld
+

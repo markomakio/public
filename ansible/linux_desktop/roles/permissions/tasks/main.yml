@@ -1,0 +1,61 @@
+- name: Modify /var/log/* permissions
+  ansible.builtin.file:
+    path: /var/log/
+    mode: o-rwx
+    recurse: true
+  tags:
+    - log_permissions
+    - permissions
+
+- name: Modify /var/log directory permission
+  ansible.builtin.file:
+    path: /var/log
+    mode: 0755
+  tags:
+    - log_permissions
+    - permissions
+
+- name: Change cron files permissions
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: u+rwX,g-rwx,o-rwx
+  loop:
+    - /etc/crontab
+    - /etc/cron.d
+    - /etc/cron.daily
+    - /etc/cron.hourly
+    - /etc/cron.monthly
+    - /etc/cron.weekly
+  tags:
+    - cron
+    - permissions
+
+- name: Delete files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/cron.deny
+    - /etc/at.deny
+    - /etc/sudoers.d/90-cloud-init-users
+  tags:
+    - delete_files
+    - permissions
+
+- name: Create files
+  ansible.builtin.copy:
+    content: ""
+    dest: "{{ item }}"
+    force: false
+    owner: root
+    group: root
+    mode: 0644
+  loop:
+    - /etc/cron.allow
+    - /etc/at.allow
+    - /etc/securetty
+  tags:
+    - create_files
+    - permissions

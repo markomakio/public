@@ -1,0 +1,30 @@
+- name: Ensure kernel modules are disabled
+  ansible.builtin.lineinfile:
+    create: true
+    dest: "/etc/modprobe.d/{{ item }}.conf"
+    line: "install {{ item }} /bin/true"
+  loop:
+    - dccp
+    - sctp
+    - tipc
+    - squashfs
+    - udf
+  tags:
+    - kernel_modules
+    - kernel
+
+- name: Ensure kernel modules are blacklisted
+  ansible.builtin.lineinfile:
+    create: true
+    dest: "/etc/modprobe.d/{{ item }}.conf"
+    line: "blacklist {{ item }}"
+  loop:
+    - dccp
+    - sctp
+    - tipc
+    - squashfs
+    - udf
+  tags:
+    - kernel_modules
+    - kernel
+

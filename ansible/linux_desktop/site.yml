@@ -1,0 +1,16 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - common
+    - firewalld
+    - epel_repository
+    - rpms
+    - bash
+    - rsyslog
+    - logrotate
+    - permissions
+    - sshd
+    - audit
+    - kernel
+    - authselect
