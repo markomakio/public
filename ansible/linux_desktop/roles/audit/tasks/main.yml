@@ -17,9 +17,9 @@
     group: root
     mode: 0640
   loop:
-    - /usr/share/audit/10-base-config.rules
-    - /usr/share/audit/30-pci-dss-v31.rules
-    - /usr/share/audit/43-module-load.rules
+    - /usr/share/audit-rules/10-base-config.rules
+    - /usr/share/audit-rules/30-pci-dss-v31.rules
+    - /usr/share/audit-rules/43-module-load.rules
   notify: Load audit rules
   tags:
     - audit
