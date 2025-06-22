@@ -27,6 +27,7 @@
 
 ## Things that could affect MAC policy
 -a always,exit -F dir=/etc/selinux/ -F perm=wa -F key=MAC-policy
+-a always,exit -F dir=/usr/share/selinux/ -F perm=wa -F key=MAC-policy
 
 ##- Export to media (successful)
 ## You have to mount media before using it. You must disable all automounting
