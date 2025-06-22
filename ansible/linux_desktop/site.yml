@@ -14,4 +14,5 @@
     - audit
     - kernel
     - authselect
+    - services
     - aide
