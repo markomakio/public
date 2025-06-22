@@ -2,8 +2,11 @@
   ansible.builtin.dnf:
     name:
       - cups
+      - dnsmasq
+      - nc
     state: absent
   tags:
+    - rpms_remove
     - rpms
 
 - name: Install rpms
@@ -13,10 +16,11 @@
       - ansible-collection-community-general
       - bash-completion
       - bat
+      - chrony
       - firewalld
       - glibc-langpack-en
-      - nc
       - openscap-scanner
+      - policycoreutils-python-utils
       - scap-security-guide
       - sysstat
       - unzip
@@ -24,5 +28,6 @@
       - vim
     state: present
   tags:
+    - rpms_install
     - rpms
     
