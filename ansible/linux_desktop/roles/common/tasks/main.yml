@@ -80,6 +80,7 @@
     owner: root
     group: root
     mode: 0644
+  notify: Reload sysctl
   tags:
     - sysctl
     - common
@@ -95,7 +96,7 @@
     - journald
     - common
 
-- name: Ensure the Default umask is Appended Correctly
+- name: Ensure the Default umask is Defined  Correctly
   ansible.builtin.replace:
     path: '{{ item }}'
     regexp: 'umask 022'
@@ -107,6 +108,16 @@
   tags:
     - umask
     - common
+
+- name: Ensure the Default umask is Appended Correctly
+  ansible.builtin.lineinfile:
+    path: "{{ item }}"
+    create: true
+    line: 'umask 027'
+  loop:
+    - /etc/profile
+  tags:
+    - umask
 
 - name: Replace user UMASK in /etc/login.defs
   ansible.builtin.replace:
