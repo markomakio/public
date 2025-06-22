@@ -12,3 +12,21 @@
   tags:
     - sshd
 
+- name: Check on which ports sshd is allowed to listen
+  ansible.builtin.shell: /usr/sbin/semanage port --list | /bin/grep ssh_port_t
+  register: is_sshd_port_allowed
+  changed_when: false
+  tags:
+    - sshd
+    - sshd_custom_port
+
+- name: Allow sshd to listen on custom port
+  ansible.builtin.command: /usr/sbin/semanage port -a -t ssh_port_t -p tcp {{ sshd_port }}
+  when:
+    - is_sshd_port_allowed is success
+    - 'sshd_port | string not in is_sshd_port_allowed.stdout'
+    - sshd_port != 22
+  tags:
+    - sshd
+    - sshd_custom_port
+
