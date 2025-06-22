@@ -1,0 +1,71 @@
+- name: Stop and disable services
+  ansible.builtin.systemd_service:
+    name: '{{ item }}'
+    enabled: false
+    state: stopped
+  loop:
+    - avahi-daemon.service
+    - avahi-daemon.socket
+    - fwupd-refresh.service
+    - fwupd-refresh.timer
+    - fwupd.service
+    - gssproxy.service
+    - rpcbind.service
+    - rpcbind.socket
+    - sssd-kcm.service
+    - sssd-kcm.socket
+  tags:
+    - services_disabled
+    - services
+
+- name: Disable and mask services
+  ansible.builtin.systemd_service:
+    name: '{{ item }}'
+    enabled: false
+    state: stopped
+    masked: yes
+  loop:
+    - avahi-daemon.service
+    - bluetooth.service
+    - nfs-server.service
+    - nftables.service
+    - rpcbind.service
+  tags:
+    - services_masked
+    - services
+
+- name: Enable and start services
+  ansible.builtin.systemd_service:
+    name: '{{ item }}'
+    enabled: true
+    state: started
+  loop:
+    - chronyd.service
+  tags:
+    - services_enabled
+    - services
+
+- name: Stop and disable sshd service
+  ansible.builtin.systemd_service:
+    name: sshd.service
+    enabled: false
+    state: stopped
+  when:
+    - sshd_enabled is false
+  tags:
+    - sshd
+    - services_disabled
+    - services
+
+- name: Enable and start sshd service
+  ansible.builtin.systemd_service:
+    name: sshd.service
+    enabled: true
+    state: started
+  when:
+    - sshd_enabled is true
+  tags:
+    - sshd
+    - services_enabled
+    - services
+
