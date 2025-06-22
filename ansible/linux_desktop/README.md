@@ -9,14 +9,16 @@ Evaluated with:
 $ sudo oscap xccdf eval --report report.html --profile xccdf_org.ssgproject.content_profile_cis_workstation_l2 /usr/share/xml/scap/ssg/content/ssg-rhel10-ds.xml
 ```
 
+Network and `/etc/fstab` configurations are left outside this playbook. It's probably possible to create regex for adding `nosuid,nodev,noexec` to `/etc/fstab`, but I didn't find it worth the trouble as manual configuration is faster, easier and less error-prone.
+
 ## Other info
 * Bash prompt and history are customized.
 * Bash commands are also logged by rsyslog.
-* umask is 027
+* umask is 027.
 * Sshd is disabled by default but can be enabled by changing `sshd_enabled` variable.
 * Sshd listen port can also be defined by `sshd_port` variable. SELinux is modified if needed.
 * Firewalld rules for sshd are created if necessary. Default firewalld zone is `drop`.
-* EPEL repository is enabled
+* EPEL repository is enabled.
 * Basic sysctl hardening.
 * Audit ruleset should be ok. Made for 2GiB /var/log/audit partition.
 * Aide is installed and database init done.
