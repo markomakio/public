@@ -4,7 +4,7 @@ Created to help possible reinstall configuration. Tested to work with RHEL 10. R
 ## Hardening
 2025-06-22 DRAFT - CIS Red Hat Enterprise Linux 10 Benchmark for Level 2 - Workstation gave score `91.22%`. For failed ones, some configurations I didn't find meaningful to implement for my environment and many failed ones are false positives.
 
-Evaluated with::
+Evaluated with:
 ```
 $ sudo oscap xccdf eval --report report.html --profile xccdf_org.ssgproject.content_profile_cis_workstation_l2 /usr/share/xml/scap/ssg/content/ssg-rhel10-ds.xml
 ```
