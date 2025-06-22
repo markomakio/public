@@ -26,10 +26,12 @@
     masked: yes
   loop:
     - avahi-daemon.service
+    - avahi-daemon.socket
     - bluetooth.service
     - nfs-server.service
     - nftables.service
     - rpcbind.service
+    - rpcbind.socket
   tags:
     - services_masked
     - services
