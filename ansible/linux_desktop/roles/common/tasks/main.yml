@@ -98,7 +98,7 @@
 
 - name: Ensure the Default umask is Defined  Correctly
   ansible.builtin.replace:
-    path: '{{ item }}'
+    path: "{{ item }}"
     regexp: 'umask 022'
     replace: 'umask 027'
   loop:

@@ -1,6 +1,6 @@
 - name: Stop and disable services
   ansible.builtin.systemd_service:
-    name: '{{ item }}'
+    name: "{{ item }}"
     enabled: false
     state: stopped
   loop:
@@ -20,7 +20,7 @@
 
 - name: Disable and mask services
   ansible.builtin.systemd_service:
-    name: '{{ item }}'
+    name: "{{ item }}"
     enabled: false
     state: stopped
     masked: yes
@@ -38,7 +38,7 @@
 
 - name: Enable and start services
   ansible.builtin.systemd_service:
-    name: '{{ item }}'
+    name: "{{ item }}"
     enabled: true
     state: started
   loop:

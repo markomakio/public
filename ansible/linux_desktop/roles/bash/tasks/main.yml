@@ -9,7 +9,7 @@
 - name: Create ~/.bashrc.d directory
   become: false
   ansible.builtin.file:
-    path: '/home/{{ user_running_playbook.stdout }}/.bashrc.d'
+    path: "/home/{{ user_running_playbook.stdout }}/.bashrc.d"
     state: directory
   tags:
     - bash_user
@@ -18,8 +18,8 @@
 - name: Copy bashrc files to ~/.bashrc.d directory
   become: false
   ansible.builtin.copy:
-    src: '{{ item }}'
-    dest: '/home/{{ user_running_playbook.stdout }}/.bashrc.d'
+    src: "{{ item }}"
+    dest: "/home/{{ user_running_playbook.stdout }}/.bashrc.d"
   loop:
     - bash_history.bashrc
     - bash_prompt.bashrc
