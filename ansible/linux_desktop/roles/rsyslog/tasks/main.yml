@@ -4,7 +4,7 @@
     dest: /etc/rsyslog.d/bash_logging.conf
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   notify: Restart rsyslog
   tags:
     - bash
@@ -16,7 +16,7 @@
     path: /etc/rsyslog.conf
     regexp: 'FileCreateMode="0644"'
     replace: 'FileCreateMode="0640"'
-    mode: 0640
+    mode: '0640'
   notify: Restart rsyslog
   tags:
     - rsyslog

@@ -4,7 +4,7 @@
     dest: /etc/audit/auditd.conf
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   tags:
     - audit
 
@@ -15,7 +15,7 @@
     remote_src: true
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   loop:
     - /usr/share/audit-rules/10-base-config.rules
     - /usr/share/audit-rules/30-pci-dss-v31.rules
@@ -30,7 +30,7 @@
     dest: /etc/audit/rules.d/
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   loop:
     - 50-openscap-pci-dss.rules
     - 31-privileged.rules

@@ -4,7 +4,7 @@
     dest: "{{ item.dest }}"
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   loop:
     - { src: 'firewalld.conf.j2', dest: '/etc/firewalld/firewalld.conf' }
     - { src: 'drop.xml.j2', dest: '/etc/firewalld/zones/drop.xml' }

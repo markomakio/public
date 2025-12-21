@@ -38,7 +38,7 @@
     dest: /etc/issue.net
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   tags:
     - banner
     - common
@@ -58,7 +58,7 @@
     dest: /etc/systemd/coredump.conf
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   tags:
     - core_dump
     - common
@@ -79,7 +79,7 @@
     dest: /etc/sysctl.d/98-hardening.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify: Reload sysctl
   tags:
     - sysctl
@@ -91,7 +91,7 @@
     dest: /etc/systemd/journald.conf
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   tags:
     - journald
     - common
@@ -134,7 +134,7 @@
     dest: /etc/sudoers
     owner: root
     group: root
-    mode: 0440
+    mode: '0440'
   tags:
     - sudo
     - common
