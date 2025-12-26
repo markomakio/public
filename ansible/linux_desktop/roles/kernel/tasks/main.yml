@@ -28,3 +28,18 @@
     - kernel_modules
     - kernel
 
+- name: Copy sysctl hardening.conf
+  ansible.builtin.copy: 
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - { src: '98-hardening.conf', dest: '/etc/sysctl.d/98-hardening.conf' }
+    - { src: '98-custom.conf', dest: '/etc/sysctl.d/98-custom.conf' }
+  notify: Reload sysctl
+  tags: 
+    - sysctl
+    - kernel
+    

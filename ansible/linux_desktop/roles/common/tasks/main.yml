@@ -73,18 +73,6 @@
     - sysctl
     - common
 
-- name: Copy sysctl hardening.conf
-  ansible.builtin.copy:
-    src: 98-hardening.conf
-    dest: /etc/sysctl.d/98-hardening.conf
-    owner: root
-    group: root
-    mode: '0644'
-  notify: Reload sysctl
-  tags:
-    - sysctl
-    - common
-
 - name: Copy journald.conf
   ansible.builtin.copy:
     src: journald.conf
