@@ -1,4 +1,4 @@
-# Ansible playbook for setting basic hardened Linux desktop environment
+# Ansible playbook for setting basic hardened Linux desktop environment with personal twist
 Created to help possible reinstall configuration. Tested to work with RHEL 10. Roles are used for easy skipping and/or modifying order.
 
 ## Hardening
@@ -18,8 +18,9 @@ Network and `/etc/fstab` configurations are left outside this playbook. It's pro
 * Sshd is disabled by default but can be enabled by changing `sshd_enabled` variable.
 * Sshd listen port can also be defined by `sshd_port` variable. SELinux is modified if needed.
 * Firewalld rules for sshd are created if necessary. Default firewalld zone is `drop`.
-* EPEL repository is enabled.
-* Basic sysctl hardening.
+* CodeReady Linux Builder, EPEL and RPM Fusion repositories are enabled. RPMs for video playback are installed.
+* CUPS and its dependencies are uninstalled.
+* Basic sysctl hardening and tuning.
 * Audit ruleset should be ok. Made for 2GiB /var/log/audit partition.
 * Aide is installed and database init done.
 
