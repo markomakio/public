@@ -4,7 +4,7 @@
   roles:
     - common
     - firewalld
-    - epel_repository
+    - repositories
     - rpms
     - bash
     - rsyslog

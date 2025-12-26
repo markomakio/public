@@ -5,6 +5,8 @@
       - dnsmasq
       - nc
     state: absent
+    allowerasing: true
+    autoremove: true
   tags:
     - rpms_remove
     - rpms
@@ -30,4 +32,20 @@
   tags:
     - rpms_install
     - rpms
-    
+
+- name: Install support for video playback
+  ansible.builtin.dnf:
+    name:
+      - ffmpeg
+      - gstreamer1-plugins-base
+      - gstreamer1-plugins-ugly
+      - vlc
+    state: present
+  when:
+    - epel_repository is success
+    - cbr_repository is success
+    - rpmfusion_repositories is success
+  tags:
+    - rpms_install
+    - rpms
+    - video_playback

@@ -1,0 +1,86 @@
+- name: Import EPEL 10 GPG key from URL
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-10
+    fingerprint: 7D8D 15CB FC4E 6268 8591  FB26 33D9 8517 E37E D158
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - epel
+    - video_playback
+
+- name: Install EPEL 10 epel-release rpm
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+    state: present
+  register: epel_repository
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - epel
+    - video_playback
+
+- name: Enable codeready-builder-for-rhel-10-x86_64-rpms repository
+  community.general.rhsm_repository:
+    name: codeready-builder-for-rhel-10-x86_64-rpms
+    state: enabled
+  register: cbr_repository
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - crb
+    - video_playback
+
+- name: Install distribution-gpg-keys
+  ansible.builtin.dnf:
+    name: distribution-gpg-keys
+    state: present
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - rpmfusion
+    - video_playback
+
+- name: Import rpmfusion GPG keys
+  ansible.builtin.rpm_key:
+    state: present
+    key: "{{ item }}"
+  loop:
+    - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-10
+    - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-el-10
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - rpmfusion
+    - video_playback
+
+- name: Install rpmfusion repositories
+  ansible.builtin.dnf:
+    name:
+      - https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-10.noarch.rpm
+      - https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-10.noarch.rpm
+    state: present
+  register: rpmfusion_repositories
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - rpmfusion
+    - video_playback
