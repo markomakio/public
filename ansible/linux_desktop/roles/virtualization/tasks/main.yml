@@ -1,0 +1,75 @@
+---
+- name: Ensure virtualization rpms are installed
+  ansible.builtin.dnf:
+    name:
+      - qemu-kvm
+      - libvirt
+      - virt-install
+      - virt-viewer
+      # - virt-manager
+    state: present
+  tags:
+    - virtualization_rpms
+    - virtualization
+
+- name: Ensure virtualization services are running
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - virtqemud.socket
+    - virtqemud-ro.socket
+    - virtqemud-admin.socket
+    - virtnetworkd.socket
+    - virtnetworkd-ro.socket
+    - virtnetworkd-admin.socket
+    - virtnodedevd.socket
+    - virtnodedevd-ro.socket
+    - virtnodedevd-admin.socket
+    - virtnwfilterd.socket
+    - virtnwfilterd-ro.socket
+    - virtnwfilterd-admin.socket
+    - virtsecretd.socket
+    - virtsecretd-ro.socket
+    - virtsecretd-admin.socket
+    - virtstoraged.socket
+    - virtstoraged-ro.socket
+    - virtstoraged-admin.socket
+    - virtinterfaced.socket
+    - virtinterfaced-ro.socket
+    - virtinterfaced-admin.socket
+
+- name: Ensure libvirt group has member {{ username | default(ansible_env['USERNAME']) }}
+  ansible.builtin.user:
+    name: "{{ username | default(ansible_env['USERNAME']) }}"
+    groups: libvirt
+    append: true
+
+- name: Ensure libvirt config directory exists for user
+  ansible.builtin.file:
+    path: "/home/{{ username | default(ansible_env['USERNAME']) }}/.config/libvirt"
+    state: directory
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0755'
+
+- name: Ensure libvirt.conf exists for user
+  ansible.builtin.copy:
+    src: /etc/libvirt/libvirt.conf
+    dest: "/home/{{ username | default(ansible_env['USERNAME']) }}/.config/libvirt/libvirt.conf"
+    remote_src: true
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0644'
+    force: false
+
+- name: Ensure qemu:///system is configured in libvirt.conf for user
+  ansible.builtin.lineinfile:
+    path: "/home/{{ username | default(ansible_env['USERNAME']) }}/.config/libvirt/libvirt.conf"
+    regexp: '^#uri_default = "qemu:///system"'
+    line: 'uri_default = "qemu:///system"'
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0644'
+    backup: true

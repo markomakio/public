@@ -1,0 +1,6 @@
+---
+- name: Ensure virtualization is enabled
+  hosts: all
+  become: true
+  roles:
+    - virtualization
