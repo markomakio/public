@@ -13,4 +13,3 @@
   notify: Restart firewalld
   tags:
     - firewalld
-

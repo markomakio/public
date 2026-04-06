@@ -1,11 +1,12 @@
 ---
-- hosts: all
+- name: Basic hardened configuration
+  hosts: all
   become: true
   roles:
-    - common
-    - firewalld
     - repositories
     - rpms
+    - common
+    - firewalld
     - bash
     - rsyslog
     - logrotate

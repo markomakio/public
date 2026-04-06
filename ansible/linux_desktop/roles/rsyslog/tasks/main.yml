@@ -11,7 +11,7 @@
     - bash_system
     - rsyslog
 
-- name: Ensure rsyslog Default File Permissions Configured
+- name: Ensure rsyslog default file permissions configured
   ansible.builtin.replace:
     path: /etc/rsyslog.conf
     regexp: 'FileCreateMode="0644"'
@@ -20,4 +20,3 @@
   notify: Restart rsyslog
   tags:
     - rsyslog
-

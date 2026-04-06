@@ -1,38 +1,26 @@
-- name: Get the username of the user running this Ansible playbook
-  become: false
-  ansible.builtin.command: /usr/bin/whoami
-  register: user_running_playbook
-  changed_when: false
-  tags:
-    - bash
-    - sshd
-    - common
-
-- name: Get timezone 
-  ansible.builtin.command: /usr/bin/timedatectl
-  register: timezone
-  changed_when: false
+---
+- name: Ensure timezone is Europe/Helsinki
+  community.general.timezone:
+    name: Europe/Helsinki
   tags:
     - timezone
     - common
 
-- name: Set timezone to Europe/Helsinki
-  ansible.builtin.command: /usr/bin/timedatectl set-timezone Europe/Helsinki
-  when: "'Europe/Helsinki' not in timezone.stdout"
-  tags:
-    - timezone
-    - common
-
-- name: Set LANG to en_GB.UTF-8
-  ansible.builtin.lineinfile:
-    path: /etc/locale.conf
-    search_string: 'LANG='
-    line: 'LANG=en_GB.UTF-8'
+- name: Ensure LANG is en_GB.UTF-8
+  ansible.builtin.command: /usr/bin/localectl set-locale LANG=en_GB.UTF-8
+  changed_when: true
   tags:
     - lang
     - common
 
-- name: Set banner
+- name: Ensure keymap is fi
+  ansible.builtin.command: /usr/bin/localectl set-keymap fi
+  changed_when: true
+  tags:
+    - keymap
+    - common
+
+- name: Ensure banner is set
   ansible.builtin.copy:
     src: issue.net
     dest: /etc/issue.net
@@ -43,7 +31,7 @@
     - banner
     - common
 
-- name: Disable core dumps
+- name: Ensure core dumps is disabled
   ansible.builtin.lineinfile:
     dest: /etc/security/limits.conf
     regexp: '^[#]*\*.*core.*0'
@@ -63,7 +51,7 @@
     - core_dump
     - common
 
-- name: Disable core suid core dumps
+- name: Ensure core suid core dumps is disabled
   ansible.builtin.lineinfile:
     dest: /lib/sysctl.d/50-coredump.conf
     regexp: '^fs.suid_dumpable=2'
@@ -84,7 +72,7 @@
     - journald
     - common
 
-- name: Ensure the Default umask is Defined  Correctly
+- name: Ensure the default umask is defined correctly
   ansible.builtin.replace:
     path: "{{ item }}"
     regexp: 'umask 022'
@@ -97,15 +85,13 @@
     - umask
     - common
 
-- name: Ensure the Default umask is Appended Correctly
+- name: Ensure the default umask is appended correctly
   ansible.builtin.lineinfile:
-    path: "{{ item }}"
-    create: true
+    path: /etc/profile
     line: 'umask 027'
-  loop:
-    - /etc/profile
   tags:
     - umask
+    - common
 
 - name: Replace user UMASK in /etc/login.defs
   ansible.builtin.replace:
@@ -126,4 +112,3 @@
   tags:
     - sudo
     - common
-

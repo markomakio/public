@@ -1,16 +1,11 @@
-#- name: Get the username of the user running this Ansible playbook
-#  become: false
-#  ansible.builtin.command: /usr/bin/whoami
-#  register: user_running_playbook
-#  tags:
-#    - bash_user
-#    - bash
-
 - name: Create ~/.bashrc.d directory
   become: false
   ansible.builtin.file:
-    path: "/home/{{ user_running_playbook.stdout }}/.bashrc.d"
+    path: "/home/{{ username | default(ansible_env['USERNAME']) }}/.bashrc.d"
     state: directory
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0755'
   tags:
     - bash_user
     - bash
@@ -19,7 +14,10 @@
   become: false
   ansible.builtin.copy:
     src: "{{ item }}"
-    dest: "/home/{{ user_running_playbook.stdout }}/.bashrc.d"
+    dest: "/home/{{ username | default(ansible_env['USERNAME']) }}/.bashrc.d"
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0644'
   loop:
     - bash_history.bashrc
     - bash_prompt.bashrc
@@ -37,4 +35,3 @@
   tags:
     - bash_system
     - bash
-

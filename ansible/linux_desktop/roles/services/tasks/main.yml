@@ -14,6 +14,10 @@
     - rpcbind.socket
     - sssd-kcm.service
     - sssd-kcm.socket
+  register: services_stop_service
+  failed_when:
+    - services_stop_service.failed == true
+    - '"Could not find the requested service" not in services_stop_service.msg'
   tags:
     - services_disabled
     - services
@@ -23,7 +27,7 @@
     name: "{{ item }}"
     enabled: false
     state: stopped
-    masked: yes
+    masked: true
   loop:
     - avahi-daemon.service
     - avahi-daemon.socket
@@ -32,6 +36,10 @@
     - nftables.service
     - rpcbind.service
     - rpcbind.socket
+  register: services_disable_service
+  failed_when:
+    - services_disable_service.failed == true
+    - '"Could not find the requested service" not in services_disable_service.msg'
   tags:
     - services_masked
     - services
@@ -70,4 +78,3 @@
     - sshd
     - services_enabled
     - services
-

@@ -1,3 +1,14 @@
+---
+
+#
+# Workaround for ansible.builtin.rpm_key not truly idempotent for unknown reason
+#
+
+- name: Get list of installed rpm keys
+  ansible.builtin.command: /usr/bin/rpmkeys --list
+  changed_when: false
+  register: repositories_rpmkeys_list
+
 - name: Import EPEL 10 GPG key from URL
   ansible.builtin.rpm_key:
     state: present
@@ -6,17 +17,16 @@
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
+    - "'e37ed158' not in repositories_rpmkeys_list.stdout"
   tags:
     - rhel10
     - repositories
     - epel
-    - video_playback
 
 - name: Install EPEL 10 epel-release rpm
   ansible.builtin.dnf:
     name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
     state: present
-  register: epel_repository
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
@@ -24,13 +34,11 @@
     - rhel10
     - repositories
     - epel
-    - video_playback
 
 - name: Enable codeready-builder-for-rhel-10-x86_64-rpms repository
   community.general.rhsm_repository:
     name: codeready-builder-for-rhel-10-x86_64-rpms
     state: enabled
-  register: cbr_repository
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
@@ -38,7 +46,6 @@
     - rhel10
     - repositories
     - crb
-    - video_playback
 
 - name: Install distribution-gpg-keys
   ansible.builtin.dnf:
@@ -51,31 +58,40 @@
     - rhel10
     - repositories
     - rpmfusion
-    - video_playback
 
-- name: Import rpmfusion GPG keys
-  ansible.builtin.rpm_key:
-    state: present
-    key: "{{ item }}"
-  loop:
-    - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-10
-    - /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-el-10
+- name: Import rpmfusion free GPG keys
+  ansible.builtin.command:
+    cmd: /usr/bin/rpmkeys --import /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-10
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
+    - "'db85ddd7' not in repositories_rpmkeys_list.stdout"
+  changed_when: true
   tags:
     - rhel10
     - repositories
     - rpmfusion
-    - video_playback
+
+- name: Import rpmfusion non-free GPG keys
+  ansible.builtin.command:
+    cmd: /usr/bin/rpmkeys --import /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-el-10
+  when:
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+    - "'1bc7b804' not in repositories_rpmkeys_list.stdout"
+  changed_when: true
+  tags:
+    - rhel10
+    - repositories
+    - rpmfusion
 
 - name: Install rpmfusion repositories
   ansible.builtin.dnf:
-    name:
-      - https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-10.noarch.rpm
-      - https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-10.noarch.rpm
+    name: "{{ item }}"
     state: present
-  register: rpmfusion_repositories
+  loop:
+    - https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-10.noarch.rpm
+    - https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-10.noarch.rpm
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
@@ -83,4 +99,3 @@
     - rhel10
     - repositories
     - rpmfusion
-    - video_playback

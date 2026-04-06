@@ -39,31 +39,17 @@
   tags:
     - audit
 
-- name: Check if audit=1 is configured in grub
-  ansible.builtin.command: /bin/grep "audit=1" /etc/default/grub
-  register: grep_audit
-  failed_when: grep_audit.rc > 1
+- name: Check if audit is already configured in grub
+  ansible.builtin.command:
+    cmd: /usr/bin/cat /etc/default/grub
   changed_when: false
+  register: audit_check
   tags:
     - audit
 
-- name: Enable audit=1 in grub
-  ansible.builtin.command: /sbin/grubby --update-kernel=ALL --args="audit=1"
-  when: grep_audit.rc == 1
+- name: Ensure audit is configured in grub
+  ansible.builtin.command: /usr/sbin/grubby --update-kernel=ALL --args="audit=1 audit_backlog_limit=8192"
+  when: "'audit=1 audit_backlog_limit=8192' not in audit_check.stdout"
+  changed_when: true
   tags:
     - audit
-
-- name: Check if audit_backlog_limit is configured in grub
-  ansible.builtin.command: /bin/grep "audit_backlog_limit=8192" /etc/default/grub
-  register: grep_audit2
-  failed_when: grep_audit2.rc > 1
-  changed_when: false
-  tags:
-    - audit
-
-- name: Enable audit_backlog_limit in grub
-  ansible.builtin.command: /sbin/grubby --update-kernel=ALL --args="audit_backlog_limit=8192"
-  when: grep_audit2.rc == 1
-  tags:
-    - audit
-

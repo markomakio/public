@@ -18,7 +18,7 @@ Include /etc/ssh/sshd_config.d/*.conf
 # SELinux about this change.
 # semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
 #
-Port {{ sshd_port }}
+Port {{ sshd_port | default('22') }}
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
@@ -41,7 +41,7 @@ PermitRootLogin no
 #StrictModes yes
 MaxAuthTries 4
 MaxSessions 10
-AllowUsers {{ user_running_playbook.stdout }}
+AllowUsers {{ username | default(ansible_env['USERNAME']) }}
 DenyUsers root
 
 #PubkeyAuthentication yes

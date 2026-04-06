@@ -1,3 +1,4 @@
 - name: Load audit rules
-  ansible.builtin.command: /usr/sbin/augenrules --load
-
+  ansible.builtin.systemd_service:
+    name: audit-rules.service
+    state: restarted

@@ -39,7 +39,7 @@
   loop:
     - /etc/cron.deny
     - /etc/at.deny
-    - /etc/sudoers.d/90-cloud-init-users
+    # - /etc/sudoers.d/90-cloud-init-users
   tags:
     - delete_files
     - permissions

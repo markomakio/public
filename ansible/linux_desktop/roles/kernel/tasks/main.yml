@@ -3,6 +3,9 @@
     create: true
     dest: "/etc/modprobe.d/{{ item }}.conf"
     line: "install {{ item }} /bin/true"
+    owner: root
+    group: root
+    mode: '0644'
   loop:
     - dccp
     - sctp
@@ -18,6 +21,9 @@
     create: true
     dest: "/etc/modprobe.d/{{ item }}.conf"
     line: "blacklist {{ item }}"
+    owner: root
+    group: root
+    mode: '0644'
   loop:
     - dccp
     - sctp
@@ -29,8 +35,8 @@
     - kernel
 
 - name: Copy sysctl hardening.conf
-  ansible.builtin.copy: 
-    src: "{{ item.src }}" 
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     owner: root
     group: root
@@ -39,7 +45,6 @@
     - { src: '98-hardening.conf', dest: '/etc/sysctl.d/98-hardening.conf' }
     - { src: '98-custom.conf', dest: '/etc/sysctl.d/98-custom.conf' }
   notify: Reload sysctl
-  tags: 
+  tags:
     - sysctl
     - kernel
-    

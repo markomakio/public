@@ -21,12 +21,16 @@
       - chrony
       - firewalld
       - glibc-langpack-en
+      - iftop
+      - iotop
+      - logwatch
+      - nvtop
       - openscap-scanner
+      - pcp-system-tools
       - policycoreutils-python-utils
       - scap-security-guide
       - sysstat
       - unzip
-      - logwatch
       - vim
     state: present
   tags:
@@ -41,10 +45,6 @@
       - gstreamer1-plugins-ugly
       - vlc
     state: present
-  when:
-    - epel_repository is success
-    - cbr_repository is success
-    - rpmfusion_repositories is success
   tags:
     - rpms_install
     - rpms
