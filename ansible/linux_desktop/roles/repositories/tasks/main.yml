@@ -1,5 +1,4 @@
 ---
-
 #
 # Workaround for ansible.builtin.rpm_key not truly idempotent for unknown reason
 #
@@ -42,6 +41,7 @@
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
+    - repositories_only_epel is false
   tags:
     - rhel10
     - repositories
@@ -54,6 +54,7 @@
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
+    - repositories_only_epel is false
   tags:
     - rhel10
     - repositories
@@ -66,6 +67,7 @@
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
     - "'db85ddd7' not in repositories_rpmkeys_list.stdout"
+    - repositories_only_epel is false
   changed_when: true
   tags:
     - rhel10
@@ -79,6 +81,7 @@
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
     - "'1bc7b804' not in repositories_rpmkeys_list.stdout"
+    - repositories_only_epel is false
   changed_when: true
   tags:
     - rhel10
@@ -95,6 +98,7 @@
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
+    - repositories_only_epel is false
   tags:
     - rhel10
     - repositories

@@ -15,7 +15,6 @@
   ansible.builtin.dnf:
     name:
       - aide
-      - ansible-collection-community-general
       - bash-completion
       - bat
       - chrony
@@ -45,6 +44,8 @@
       - gstreamer1-plugins-ugly
       - vlc
     state: present
+  when:
+    - rpms_desktop is true
   tags:
     - rpms_install
     - rpms
