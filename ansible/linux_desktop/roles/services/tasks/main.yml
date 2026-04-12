@@ -6,9 +6,6 @@
   loop:
     - avahi-daemon.service
     - avahi-daemon.socket
-    - fwupd-refresh.service
-    - fwupd-refresh.timer
-    - fwupd.service
     - gssproxy.service
     - rpcbind.service
     - rpcbind.socket
@@ -32,6 +29,9 @@
     - avahi-daemon.service
     - avahi-daemon.socket
     - bluetooth.service
+    - fwupd-refresh.service
+    - fwupd-refresh.timer
+    - fwupd.service
     - nfs-server.service
     - nftables.service
     - rpcbind.service
@@ -42,6 +42,19 @@
     - '"Could not find the requested service" not in services_disable_service.msg'
   tags:
     - services_masked
+    - services
+
+- name: Ensure /etc/chrony.conf has local servers
+  ansible.builtin.replace:
+    path: /etc/chrony.conf
+    regexp: '^pool 2.rhel.pool.ntp.org iburst$'
+    replace: |
+      server time.mikes.fi iburst
+      server time2.mikes.fi iburst
+      server time3.mikes.fi iburst
+  notify: Restart chronyd.service
+  tags:
+    - services_chrony
     - services
 
 - name: Enable and start services
