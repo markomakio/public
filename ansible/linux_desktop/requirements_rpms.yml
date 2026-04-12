@@ -4,9 +4,29 @@
   become: true
   vars:
     repositories_only_epel: true
-  roles:
-    - repositories
+#
+#  Todo: use same role
+#  roles:
+#    - repositories
   tasks:
+    - name: Import EPEL 10 GPG key from URL
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-10
+        fingerprint: 7D8D 15CB FC4E 6268 8591  FB26 33D9 8517 E37E D158
+      when:
+        - ansible_facts['distribution'] == 'RedHat'
+        - ansible_facts['distribution_major_version'] == '10'
+        - "'e37ed158' not in repositories_rpmkeys_list.stdout"
+
+    - name: Install EPEL 10 epel-release rpm
+      ansible.builtin.dnf:
+        name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+        state: present
+      when:
+        - ansible_facts['distribution'] == 'RedHat'
+        - ansible_facts['distribution_major_version'] == '10'
+
     - name: Ensure Ansible rpms are installed
       ansible.builtin.dnf:
         name:
