@@ -1,0 +1,9 @@
+---
+- name: Ensure /dev/shm has nodev,nosuid,noexec mount options
+  ansible.posix.mount:
+    src: tmpfs
+    path: /dev/shm
+    opts: defaults,nodev,nosuid,noexec
+    fstype: tmpfs
+    state: mounted
+    boot: true

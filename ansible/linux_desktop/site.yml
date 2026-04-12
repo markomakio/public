@@ -16,4 +16,5 @@
     - kernel
     - authselect
     - services
+    - mounts
     - aide
