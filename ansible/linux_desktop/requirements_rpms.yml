@@ -1,0 +1,16 @@
+---
+- name: Ensure Ansible requirements as rpms are installed
+  hosts: all
+  become: true
+  vars:
+    repositories_only_epel: true
+  roles:
+    - repositories
+  tasks:
+    - name: Ensure Ansible rpms are installed
+      ansible.builtin.dnf:
+        name:
+          - rhel-system-roles
+          - ansible-collection-community-general
+          - ansible-collection-ansible-posix
+        state: present
