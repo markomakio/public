@@ -1,0 +1,13 @@
+---
+- name: Ensure EPEL RPM key is imported
+  ansible.builtin.include_tasks: import_rpm_key.yml
+  vars:
+    rpm_key_location: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-10
+    rpm_key_fingerprint: 7D8D 15CB FC4E 6268 8591  FB26 33D9 8517 E37E D158
+    rpm_key_short_id: e37ed158-65785fa9
+    repositories_rpm_key_url: true
+
+- name: Install EPEL 10 epel-release rpm
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
+    state: present

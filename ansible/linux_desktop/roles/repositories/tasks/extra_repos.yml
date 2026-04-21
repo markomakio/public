@@ -1,0 +1,25 @@
+---
+- name: Install distribution-gpg-keys
+  ansible.builtin.dnf:
+    name: distribution-gpg-keys
+    state: present
+
+- name: Ensure RPM GPG keys are imported
+  ansible.builtin.include_tasks: import_rpm_key.yml
+  vars:
+    rpm_key_location: "{{ item.rpm_key_location }}"
+    rpm_key_short_id: "{{ item.rpm_key_short_id }}"
+    repositories_rpm_key_url: false
+  loop:
+    - rpm_key_location: /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-10
+      rpm_key_short_id: db85ddd7-67a63d8b
+    - rpm_key_location: /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-el-10
+      rpm_key_short_id: 1bc7b804-67a63d9e
+
+- name: Install rpmfusion repositories
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-10.noarch.rpm
+    - https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-10.noarch.rpm

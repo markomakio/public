@@ -1,31 +1,6 @@
 ---
-#
-# Workaround for ansible.builtin.rpm_key not truly idempotent for unknown reason
-#
-
-- name: Get list of installed rpm keys
-  ansible.builtin.command: /usr/bin/rpmkeys --list
-  changed_when: false
-  register: repositories_rpmkeys_list
-
-- name: Import EPEL 10 GPG key from URL
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-10
-    fingerprint: 7D8D 15CB FC4E 6268 8591  FB26 33D9 8517 E37E D158
-  when:
-    - ansible_facts['distribution'] == 'RedHat'
-    - ansible_facts['distribution_major_version'] == '10'
-    - "'e37ed158' not in repositories_rpmkeys_list.stdout"
-  tags:
-    - rhel10
-    - repositories
-    - epel
-
-- name: Install EPEL 10 epel-release rpm
-  ansible.builtin.dnf:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm
-    state: present
+- name: Ensure EPEL repository is enabled
+  ansible.builtin.include_tasks: epel_repo.yml
   when:
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
@@ -34,71 +9,23 @@
     - repositories
     - epel
 
-- name: Enable codeready-builder-for-rhel-10-x86_64-rpms repository
-  community.general.rhsm_repository:
-    name: codeready-builder-for-rhel-10-x86_64-rpms
-    state: enabled
+- name: Ensure CRB repository is enabled
+  ansible.builtin.include_tasks: crb_repo.yml
   when:
+    - repositories_enable_crb is true
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
-    - repositories_only_epel is false
   tags:
     - rhel10
     - repositories
     - crb
 
-- name: Install distribution-gpg-keys
-  ansible.builtin.dnf:
-    name: distribution-gpg-keys
-    state: present
+- name: Ensure extra repositories are enabled
+  ansible.builtin.include_tasks: extra_repos.yml
   when:
+    - repositories_enable_extra is true
     - ansible_facts['distribution'] == 'RedHat'
     - ansible_facts['distribution_major_version'] == '10'
-    - repositories_only_epel is false
-  tags:
-    - rhel10
-    - repositories
-    - rpmfusion
-
-- name: Import rpmfusion free GPG keys
-  ansible.builtin.command:
-    cmd: /usr/bin/rpmkeys --import /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-free-el-10
-  when:
-    - ansible_facts['distribution'] == 'RedHat'
-    - ansible_facts['distribution_major_version'] == '10'
-    - "'db85ddd7' not in repositories_rpmkeys_list.stdout"
-    - repositories_only_epel is false
-  changed_when: true
-  tags:
-    - rhel10
-    - repositories
-    - rpmfusion
-
-- name: Import rpmfusion non-free GPG keys
-  ansible.builtin.command:
-    cmd: /usr/bin/rpmkeys --import /usr/share/distribution-gpg-keys/rpmfusion/RPM-GPG-KEY-rpmfusion-nonfree-el-10
-  when:
-    - ansible_facts['distribution'] == 'RedHat'
-    - ansible_facts['distribution_major_version'] == '10'
-    - "'1bc7b804' not in repositories_rpmkeys_list.stdout"
-    - repositories_only_epel is false
-  changed_when: true
-  tags:
-    - rhel10
-    - repositories
-    - rpmfusion
-
-- name: Install rpmfusion repositories
-  ansible.builtin.dnf:
-    name: "{{ item }}"
-    state: present
-  loop:
-    - https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-10.noarch.rpm
-    - https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-10.noarch.rpm
-  when:
-    - ansible_facts['distribution'] == 'RedHat'
-    - ansible_facts['distribution_major_version'] == '10'
-    - repositories_only_epel is false
   tags:
     - rhel10
     - repositories

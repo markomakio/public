@@ -1,0 +1,59 @@
+---
+#
+# Workaround for ansible.builtin.rpm_key not always working for unknown reason
+# "msg": "gpg: WARNING: no command supplied.  \
+# Trying to guess what you mean ...\ngpg: packet(6) with unknown version 6\n"
+#
+
+- name: Import RPM GPG key
+  block:
+    - name: Try first ansible.builtin.rpm_key
+      ansible.builtin.rpm_key:
+        state: present
+        key: "{{ rpm_key_location }}"
+        fingerprint: "{{ rpm_key_fingerprint | default(omit) }}"
+      register: repositories_rpm_key_result
+
+  rescue:
+    - name: Fail for unknown error
+      ansible.builtin.fail:
+        msg: "{{ repositories_rpm_key_result }}"
+      when:
+        - "'gpg: WARNING: no command supplied.' is not in repositories_rpm_key_result['msg']"
+
+    - name: Get list of installed rpm keys
+      ansible.builtin.command: /usr/bin/rpmkeys --list
+      changed_when: false
+      register: repositories_rpmkeys_list
+
+    - name: Set variable repositories_rpm_key_file
+      ansible.builtin.set_fact:
+        repositories_rpm_key_file: "/tmp/{{ rpm_key_location | split('/') | last }}"
+      when:
+        - rpm_key_short_id is not in repositories_rpmkeys_list['stdout']
+        - repositories_rpm_key_url is true
+
+    - name: Download RPM GPG key
+      ansible.builtin.get_url:
+        url: "{{ rpm_key_location }}"
+        dest: "{{ repositories_rpm_key_file }}"
+        owner: root
+        group: root
+        mode: '0600'
+      when:
+        - rpm_key_short_id is not in repositories_rpmkeys_list['stdout']
+        - repositories_rpm_key_url is true
+
+    - name: Get downloaded RPM GPG key fingerprint
+      ansible.builtin.command: "/usr/bin/gpg --fingerprint --show-keys {{ repositories_rpm_key_file }}"
+      changed_when: false
+      register: repositories_key_fingerprint
+      when:
+        - rpm_key_short_id is not in repositories_rpmkeys_list['stdout']
+        - repositories_rpm_key_url is true
+      failed_when: rpm_key_fingerprint is not in repositories_key_fingerprint['stdout']
+
+    - name: Run rpmkeys import
+      ansible.builtin.command: "/usr/bin/rpmkeys --import {{ repositories_rpm_key_file | default(rpm_key_location) }}"
+      changed_when: true
+      when: rpm_key_short_id is not in repositories_rpmkeys_list['stdout']
