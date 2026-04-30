@@ -6,8 +6,8 @@
     - timezone
     - common
 
-- name: Ensure LANG is en_GB.UTF-8
-  ansible.builtin.command: /usr/bin/localectl set-locale LANG=en_GB.UTF-8
+- name: Ensure LANG is en_IE.UTF-8
+  ansible.builtin.command: /usr/bin/localectl set-locale LANG=en_IE.UTF-8
   changed_when: true
   tags:
     - lang
