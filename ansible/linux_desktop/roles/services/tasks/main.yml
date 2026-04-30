@@ -6,7 +6,6 @@
   loop:
     - avahi-daemon.service
     - avahi-daemon.socket
-    - gssproxy.service
     - rpcbind.service
     - rpcbind.socket
     - sssd-kcm.service
@@ -19,7 +18,7 @@
     - services_disabled
     - services
 
-- name: Disable and mask services
+- name: Stop, disable and mask services
   ansible.builtin.systemd_service:
     name: "{{ item }}"
     enabled: false
@@ -32,6 +31,9 @@
     - fwupd-refresh.service
     - fwupd-refresh.timer
     - fwupd.service
+    - gssproxy.service
+    - packagekit.service
+    - packagekit-offline-update.service
     - nfs-server.service
     - nftables.service
     - rpcbind.service
