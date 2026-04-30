@@ -1,0 +1,17 @@
+---
+- name: Ensure flathub.org is enabled
+  ansible.builtin.get_url:
+    url: https://dl.flathub.org/repo/flathub.flatpakrepo
+    dest: /etc/flatpak/remotes.d/
+    owner: root
+    group: root
+    mode: '0644'
+  when:
+    - rpms_desktop is true
+    - repositories_enable_flatpak is true
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - flathub

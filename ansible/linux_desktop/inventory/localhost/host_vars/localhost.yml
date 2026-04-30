@@ -1,3 +1,5 @@
 sshd_enabled: false
 rpms_desktop: true
+repositories_enable_crb: true
 repositories_enable_extra: true
+repositories_enable_flatpak: true

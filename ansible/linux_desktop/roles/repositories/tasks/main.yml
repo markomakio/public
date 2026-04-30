@@ -30,3 +30,15 @@
     - rhel10
     - repositories
     - rpmfusion
+
+- name: Ensure flathub.org is enabled
+  ansible.builtin.include_tasks: flatpak.yml
+  when:
+    - rpms_desktop is true
+    - repositories_enable_flatpak is true
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - flathub

@@ -3,3 +3,11 @@
   redhat.rhel_system_roles.rhsm_repository:
     name: codeready-builder-for-rhel-10-x86_64-rpms
     state: enabled
+  when:
+    - repositories_enable_crb is true
+    - ansible_facts['distribution'] == 'RedHat'
+    - ansible_facts['distribution_major_version'] == '10'
+  tags:
+    - rhel10
+    - repositories
+    - crb

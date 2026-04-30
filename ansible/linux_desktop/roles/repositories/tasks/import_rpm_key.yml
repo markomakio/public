@@ -9,9 +9,9 @@
   block:
     - name: Try first ansible.builtin.rpm_key
       ansible.builtin.rpm_key:
-        state: present
         key: "{{ rpm_key_location }}"
         fingerprint: "{{ rpm_key_fingerprint | default(omit) }}"
+        state: present
       register: repositories_rpm_key_result
 
   rescue:
@@ -44,7 +44,7 @@
         - rpm_key_short_id is not in repositories_rpmkeys_list['stdout']
         - repositories_rpm_key_url is true
 
-    - name: Get downloaded RPM GPG key fingerprint
+    - name: Verify downloaded RPM GPG key fingerprint
       ansible.builtin.command: "/usr/bin/gpg --fingerprint --show-keys {{ repositories_rpm_key_file }}"
       changed_when: false
       register: repositories_key_fingerprint
