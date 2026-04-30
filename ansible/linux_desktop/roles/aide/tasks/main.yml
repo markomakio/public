@@ -1,3 +1,4 @@
+---
 - name: Aide init
   ansible.builtin.command:
     cmd: /usr/sbin/aide --init

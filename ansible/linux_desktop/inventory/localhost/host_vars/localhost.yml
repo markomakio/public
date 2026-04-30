@@ -1,3 +1,4 @@
+---
 sshd_enabled: false
 rpms_desktop: true
 repositories_enable_crb: true

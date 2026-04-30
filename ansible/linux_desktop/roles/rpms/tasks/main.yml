@@ -1,3 +1,4 @@
+---
 - name: Remove rpms
   ansible.builtin.dnf:
     name:

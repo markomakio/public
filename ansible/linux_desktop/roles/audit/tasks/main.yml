@@ -1,3 +1,4 @@
+---
 - name: Copy auditd.conf
   ansible.builtin.copy:
     src: auditd.conf

@@ -1,3 +1,4 @@
+---
 - name: Modify /var/log/* permissions
   ansible.builtin.file:
     path: /var/log/

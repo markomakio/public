@@ -1,3 +1,4 @@
+---
 - name: Copy sshd configs
   ansible.builtin.template:
     src: "{{ item.src }}"

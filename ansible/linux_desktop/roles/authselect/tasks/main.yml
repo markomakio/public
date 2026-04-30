@@ -1,3 +1,4 @@
+---
 - name: Check integrity of authselect current profile
   ansible.builtin.command: /usr/bin/authselect check
   register: authselect_check

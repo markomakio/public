@@ -1,3 +1,4 @@
+---
 - name: Make logrotate compress logs
   ansible.builtin.lineinfile:
     path: /etc/logrotate.conf

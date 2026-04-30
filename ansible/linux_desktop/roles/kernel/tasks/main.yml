@@ -1,3 +1,4 @@
+---
 - name: Ensure kernel modules are disabled
   ansible.builtin.lineinfile:
     create: true

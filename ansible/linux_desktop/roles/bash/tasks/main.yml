@@ -1,3 +1,4 @@
+---
 - name: Create ~/.bashrc.d directory
   become: false
   ansible.builtin.file:
