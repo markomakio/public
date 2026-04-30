@@ -7,3 +7,42 @@
     fstype: tmpfs
     state: mounted
     boot: true
+  tags:
+    - mount_options
+
+- name: Ensure nodev,nosuid,noexec mount options are set
+  ansible.posix.mount:
+    src: "UUID={{ item['uuid'] }}"
+    path: "{{ item['mount'] }}"
+    opts: defaults,nodev,nosuid,noexec
+    fstype: "{{ item['fstype'] }}"
+    state: mounted
+    boot: true
+  loop: "{{ ansible_facts['mounts'] }}"
+  loop_control:
+    label: "{{ item['mount'] }}"
+  when:
+    - "item['mount'] == '/home' or
+      item['mount'] == '/tmp' or
+      item['mount'] == '/var/log' or
+      item['mount'] == '/var/log/audit' or
+      item['mount'] == '/var/tmp'"
+  tags:
+    - mount_options
+
+- name: Ensure nodev,nosuid mount options are set
+  ansible.posix.mount:
+    src: "UUID={{ item['uuid'] }}"
+    path: "{{ item['mount'] }}"
+    opts: defaults,nodev,nosuid
+    fstype: "{{ item['fstype'] }}"
+    state: mounted
+    boot: true
+  loop: "{{ ansible_facts['mounts'] }}"
+  loop_control:
+    label: "{{ item['mount'] }}"
+  when:
+    - "item['mount'] == '/boot' or
+      item['mount'] == '/var'"
+  tags:
+    - mount_options
