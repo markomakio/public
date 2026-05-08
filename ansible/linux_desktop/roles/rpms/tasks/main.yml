@@ -30,11 +30,47 @@
       - policycoreutils-python-utils
       - scap-security-guide
       - sysstat
+      - tmux
+      - tmux-powerline
       - unzip
-      - vim
+      - vim-ansible
+      - vim-enhanced
+      - vim-powerline
     state: present
   tags:
     - rpms_install
+    - rpms
+
+- name: Ensure configuration is in place
+  become: false
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/home/{{ username | default(ansible_env['USERNAME']) }}/.{{ item }}"
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0644'
+  loop:
+    - vimrc
+    - tmux.conf
+  tags:
+    - rpms_configuration
+    - rpms
+
+- name: Ensure configuration directories exist
+  become: false
+  ansible.builtin.file:
+    path: "/home/{{ username | default(ansible_env['USERNAME']) }}/{{ item }}"
+    state: directory
+    owner: "{{ username | default(ansible_env['USERNAME']) }}"
+    group: "{{ groupname | default(ansible_env['USERNAME']) }}"
+    mode: '0755'
+  loop:
+    - .vim
+    - .vim/backup
+    - .vim/swap
+    - .vim/undo
+  tags:
+    - rpms_configuration
     - rpms
 
 - name: Install support for video playback
