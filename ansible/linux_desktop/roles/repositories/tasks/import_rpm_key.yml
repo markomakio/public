@@ -7,7 +7,7 @@
 
 - name: Import RPM GPG key
   block:
-    - name: Try first ansible.builtin.rpm_key
+    - name: Ensure RPM GPG key is imported with ansible.builtin.rpm_key
       ansible.builtin.rpm_key:
         key: "{{ rpm_key_location }}"
         fingerprint: "{{ rpm_key_fingerprint | default(omit) }}"
