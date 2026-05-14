@@ -65,7 +65,7 @@ set statusline +=\ 0x%04B\ %*   " character under cursor
 set statusline +=%#LineNr#%=    " spacer
 set statusline +=\ %F           " file path
 set statusline +=\%m\ %*        " file mode
-set statusline +=\ %{WC()}\     " number of words
+"set statusline +=\ %{WC()}\     " number of words
 set statusline +=\%l/%L\        " number of lines
 set viminfo     =""             " disable viminfo
 "set viminfo     ='10            " edited files
