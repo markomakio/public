@@ -1,0 +1,2 @@
+## Continue loading rules in spite of an error.
+-c

@@ -15,6 +15,10 @@
 -a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=1000 -F auid!=unset -F key=perm_mod
 -a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=1000 -F auid!=unset -F key=perm_mod
 
+## Record Events that Modify the System's Discretionary Access Controls - fchmodat2
+-a always,exit -F arch=b32 -S fchmodat2 -F auid>=1000 -F auid!=unset -F key=perm_mod
+-a always,exit -F arch=b64 -S fchmodat2 -F auid>=1000 -F auid!=unset -F key=perm_mod
+
 ##- Unauthorized access attempts to files (unsuccessful) 
 -a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,openat2,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=access
 -a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=access
@@ -22,8 +26,8 @@
 -a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=access
 
 ##- Files and programs deleted by the user (successful and unsuccessful)
--a always,exit -F arch=b32 -S rmdir,unlink,unlinkat,rename,renameat -F auid>=1000 -F auid!=unset -F key=delete
--a always,exit -F arch=b64 -S rmdir,unlink,unlinkat,rename,renameat -F auid>=1000 -F auid!=unset -F key=delete
+-a always,exit -F arch=b32 -S rmdir,unlink,unlinkat,rename,renameat,renameat2 -F auid>=1000 -F auid!=unset -F key=delete
+-a always,exit -F arch=b64 -S rmdir,unlink,unlinkat,rename,renameat,renameat2 -F auid>=1000 -F auid!=unset -F key=delete
 
 ## Things that could affect MAC policy
 -a always,exit -F dir=/etc/selinux/ -F perm=wa -F key=MAC-policy
@@ -57,11 +61,16 @@
 -a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k setgid
 -a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k setgid
 -w /var/log/sudo.log -p wa -k logins
--a always,exit -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
--a always,exit -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
--a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
--a always,exit -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
--a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b32 -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b64 -F path=/usr/bin/chacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b32 -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b64 -F path=/usr/bin/setfacl -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b32 -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b64 -F path=/usr/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b32 -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b64 -F path=/usr/sbin/usermod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b32 -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
+-a always,exit -F arch=b64 -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged
 -a always,exit -F arch=b32 -S create_module -F key=module-change
 -a always,exit -F arch=b64 -S create_module -F key=module-change
 -a always,exit -F arch=b32 -S query_module -F auid>=1000 -F auid!=unset -F key=modules

@@ -33,6 +33,7 @@
     group: root
     mode: '0640'
   loop:
+    - 01-initialize.rules
     - 50-openscap-pci-dss.rules
     - 31-privileged.rules
     - 99-finalize.rules
