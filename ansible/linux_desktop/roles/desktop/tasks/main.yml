@@ -1,0 +1,81 @@
+---
+- name: Gather package facts
+  ansible.builtin.package_facts:
+    manager: rpm
+  tags:
+    - desktop
+
+- name: Ensure local.d configuration directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  loop:
+    - /etc/dconf/db/local.d
+    - /etc/dconf/db/local.d/locks
+  when:
+    - "'gdm' in ansible_facts['packages']"
+  tags:
+    - desktop
+
+- name: Ensure dconf security hardening is in place
+  community.general.ini_file:
+    dest: "{{ item['dest'] }}"
+    section: "{{ item['section'] }}"
+    option: "{{ item['option'] }}"
+    value: "{{ item['value'] }}"
+    no_extra_spaces: true
+    create: true
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - dest: /etc/dconf/db/distro.d/00-security-settings
+      section: org/gnome/login-screen
+      option: disable-user-list
+      value: 'true'
+    - dest: /etc/dconf/db/local.d/00-security-settings
+      section: org/gnome/desktop/media-handling
+      option: automount
+      value: 'false'
+    - dest: /etc/dconf/db/local.d/00-security-settings
+      section: org/gnome/desktop/media-handling
+      option: autorun-never
+      value: 'true'
+  loop_control:
+    label: "{{ item['option'] }}"
+  notify: Update dconf
+  when:
+    - "'gdm' in ansible_facts['packages']"
+  tags:
+    - desktop
+
+- name: Ensure dconf options are locked
+  ansible.builtin.lineinfile:
+    path: "{{ item['path'] }}"
+    regexp: "{{ item['regexp'] }}"
+    line: "{{ item['line'] }}"
+    create: true
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - path: /etc/dconf/db/distro.d/locks/00-security-settings-lock
+      regexp: '^/org/gnome/login-screen/disable-user-list$'
+      line: /org/gnome/login-screen/disable-user-list
+    - path: /etc/dconf/db/local.d/locks/00-security-settings-lock
+      regexp: '^/org/gnome/desktop/media-handling/automount$'
+      line: /org/gnome/desktop/media-handling/automount
+    - path: /etc/dconf/db/local.d/locks/00-security-settings-lock
+      regexp: '^/org/gnome/desktop/media-handling/autorun-never$'
+      line: /org/gnome/desktop/media-handling/autorun-never
+  loop_control:
+    label: "{{ item['line'] }}"
+  notify: Update dconf
+  when:
+    - "'gdm' in ansible_facts['packages']"
+  tags:
+    - desktop
+
