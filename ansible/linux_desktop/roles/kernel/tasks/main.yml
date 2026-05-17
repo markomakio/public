@@ -8,7 +8,20 @@
     group: root
     mode: '0644'
   loop:
+    - atm
+    - can
+    - cramfs
     - dccp
+    - esp4
+    - esp6
+    - firewire-core
+    - freevxfs
+    - hfs
+    - hfsplus
+    - jffs2
+    - overlayfs
+    - rds
+    - rxrpc
     - sctp
     - tipc
     - squashfs
@@ -26,7 +39,20 @@
     group: root
     mode: '0644'
   loop:
+    - atm
+    - can
+    - cramfs
     - dccp
+    - esp4
+    - esp6
+    - firewire-core
+    - freevxfs
+    - hfs
+    - hfsplus
+    - jffs2
+    - overlayfs
+    - rds
+    - rxrpc
     - sctp
     - tipc
     - squashfs
