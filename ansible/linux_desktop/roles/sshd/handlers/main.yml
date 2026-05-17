@@ -1,4 +1,11 @@
 ---
+- name: Update crypto policies
+  ansible.builtin.command:
+    cmd: >
+      /usr/bin/update-crypto-policies --set
+      DEFAULT:NO-SSHCBC:NO-SSHWEAKCIPHERS:NO-SSHWEAKMACS:NO-WEAKMAC
+  changed_when: true
+
 - name: Restart sshd
   ansible.builtin.systemd_service:
     name: sshd.service
