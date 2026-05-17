@@ -7,20 +7,22 @@
     fstype: tmpfs
     state: mounted
     boot: true
+    backup: true
   tags:
-    - mount_options
+    - mounts
 
-- name: Ensure nodev,nosuid,noexec mount options are set
+- name: Ensure options nodev,nosuid,noexec,x-systemd.device-timeout=0 are set
   ansible.posix.mount:
     src: "UUID={{ item['uuid'] }}"
     path: "{{ item['mount'] }}"
-    opts: defaults,nodev,nosuid,noexec
+    opts: defaults,nodev,nosuid,noexec,x-systemd.device-timeout=0
     fstype: "{{ item['fstype'] }}"
     state: mounted
     boot: true
   loop: "{{ ansible_facts['mounts'] }}"
   loop_control:
     label: "{{ item['mount'] }}"
+  notify: Systemctl daemon-reload
   when:
     - "item['mount'] == '/home' or
       item['mount'] == '/tmp' or
@@ -28,9 +30,26 @@
       item['mount'] == '/var/log/audit' or
       item['mount'] == '/var/tmp'"
   tags:
-    - mount_options
+    - mounts
 
-- name: Ensure nodev,nosuid mount options are set
+- name: Ensure options defaults,nodev,nosuid,x-systemd.device-timeout=0 are set
+  ansible.posix.mount:
+    src: "UUID={{ item['uuid'] }}"
+    path: "{{ item['mount'] }}"
+    opts: defaults,nodev,nosuid,x-systemd.device-timeout=0
+    fstype: "{{ item['fstype'] }}"
+    state: mounted
+    boot: true
+  loop: "{{ ansible_facts['mounts'] }}"
+  loop_control:
+    label: "{{ item['mount'] }}"
+  notify: Systemctl daemon-reload
+  when:
+    - "item['mount'] == '/var'"
+  tags:
+    - mounts
+
+- name: Ensure options nodev,nosuid set
   ansible.posix.mount:
     src: "UUID={{ item['uuid'] }}"
     path: "{{ item['mount'] }}"
@@ -41,8 +60,8 @@
   loop: "{{ ansible_facts['mounts'] }}"
   loop_control:
     label: "{{ item['mount'] }}"
+  notify: Systemctl daemon-reload
   when:
-    - "item['mount'] == '/boot' or
-      item['mount'] == '/var'"
+    - "item['mount'] == '/boot'"
   tags:
-    - mount_options
+    - mounts

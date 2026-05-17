@@ -1,0 +1,4 @@
+---
+- name: Systemctl daemon-reload
+  ansible.builtin.command: /usr/bin/systemctl daemon-reload
+  changed_when: true
