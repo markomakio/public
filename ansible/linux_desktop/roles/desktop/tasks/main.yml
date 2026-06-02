@@ -42,6 +42,10 @@
       value: 'false'
     - dest: /etc/dconf/db/local.d/00-security-settings
       section: org/gnome/desktop/media-handling
+      option: automount-open
+      value: 'false'
+    - dest: /etc/dconf/db/local.d/00-security-settings
+      section: org/gnome/desktop/media-handling
       option: autorun-never
       value: 'true'
   loop_control:
