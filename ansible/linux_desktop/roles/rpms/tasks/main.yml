@@ -3,7 +3,6 @@
   ansible.builtin.dnf:
     name:
       - cups
-      - dnsmasq
       - nc
     state: absent
     allowerasing: true

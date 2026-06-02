@@ -29,6 +29,7 @@
     - avahi-daemon.service
     - avahi-daemon.socket
     - bluetooth.service
+    - dnsmasq.service
     - fwupd-refresh.service
     - fwupd-refresh.timer
     - fwupd.service
