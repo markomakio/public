@@ -50,6 +50,8 @@ set title                       " set window title
 set ttyfast                     " optimize for fast terminal connections
 set wildmenu                    " enhanced completion
 set wrap                        " wrap lines
+set list
+set listchars   =eol:↵,lead:·
 set background  =dark           " for dark background
 set colorcolumn =80             " highlight column 80
 set backspace   =2              " intuitive backspacing in insert mode
